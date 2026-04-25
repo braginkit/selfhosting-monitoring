@@ -1,0 +1,31 @@
+services:
+  monitor-worker:
+    image: ${MONITOR_IMAGE:-ghcr.io/braginkit/selfhosting-monitoring:latest}
+    restart: unless-stopped
+    env_file:
+      - .env.base
+      - .env
+    command: ["python", "-m", "monitoring.apps.worker"]
+    depends_on:
+      redis:
+        condition: service_started
+
+  matrix-bot:
+    image: ${MONITOR_IMAGE:-ghcr.io/braginkit/selfhosting-monitoring:latest}
+    restart: unless-stopped
+    env_file:
+      - .env.base
+      - .env
+    command: ["python", "-m", "monitoring.apps.matrix_bot"]
+    depends_on:
+      redis:
+        condition: service_started
+
+  redis:
+    image: redis@sha256:7aec734b2bb298a1d769fd8729f13b8514a41bf90fcdd1f38ec52267fbaa8ee6
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:

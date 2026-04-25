@@ -1,0 +1,11 @@
+targets:
+  - name: appflowy
+    type: http
+    url: https://appflowy.example.test/api/health
+    timeout_seconds: 1
+
+  - name: mail_smtp
+    type: smtp
+    host: smtp.example.test
+    port: 587
+    timeout_seconds: 1
