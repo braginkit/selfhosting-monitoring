@@ -58,9 +58,7 @@ async def test_reminder_after_interval(fake_redis):
     store = RedisStateStore(fake_redis, "test")
     policy = AlertPolicy(store=store, failure_threshold_attempts=1, reminder_interval_seconds=10)
 
-    first = await policy.evaluate(
-        CheckResult("appflowy", False, "down", datetime.now(UTC))
-    )
+    first = await policy.evaluate(CheckResult("appflowy", False, "down", datetime.now(UTC)))
     assert len(first) == 1
 
     no_reminder = await policy.evaluate(

@@ -23,9 +23,7 @@ async def test_dispatcher_uses_first_successful_channel():
         },
     )
 
-    used = await dispatcher.dispatch(
-        AlertEvent(target="svc", severity="down", title="t", body="b")
-    )
+    used = await dispatcher.dispatch(AlertEvent(target="svc", severity="down", title="t", body="b"))
     assert used == "matrix_outbox"
     assert calls == ["smtp", "matrix_outbox"]
 

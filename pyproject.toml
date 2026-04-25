@@ -25,10 +25,12 @@ fakeredis = "==2.35.1"
 ruff = "==0.15.12"
 mypy = "==1.20.2"
 pre-commit = "==4.3.0"
+types-PyYAML = "==6.0.12.20250915"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+addopts = "--cov=src --cov-fail-under=80 -q"
 
 [tool.poetry.scripts]
 monitor-worker = "monitoring.apps.worker:main"
@@ -47,6 +49,11 @@ no_implicit_optional = true
 warn_unused_configs = true
 mypy_path = "src"
 exclude = "(^tests/fixtures/)"
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["nio"]
+ignore_missing_imports = true
 
 [build-system]
 requires = ["poetry-core>=1.9.0"]

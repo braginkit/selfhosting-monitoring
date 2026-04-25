@@ -25,7 +25,9 @@ async def check_smtp(target: Target) -> tuple[bool, str]:
     if not target.host or not target.port:
         return False, "Missing host/port for SMTP target"
     try:
-        client = aiosmtplib.SMTP(hostname=target.host, port=target.port, timeout=target.timeout_seconds)
+        client = aiosmtplib.SMTP(
+            hostname=target.host, port=target.port, timeout=target.timeout_seconds
+        )
         await client.connect()
         await client.quit()
         return True, "SMTP connect ok"
