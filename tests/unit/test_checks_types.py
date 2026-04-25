@@ -38,7 +38,9 @@ async def test_check_http_missing_url() -> None:
 
 @pytest.mark.asyncio
 async def test_check_http_success(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr("monitoring.checks.types.ClientSession", lambda timeout: _FakeHttpSession(200))
+    monkeypatch.setattr(
+        "monitoring.checks.types.ClientSession", lambda timeout: _FakeHttpSession(200)
+    )
     ok, reason = await check_http(Target(name="svc", type="http", url="https://example.invalid"))
     assert ok is True
     assert reason == "HTTP 200"
@@ -46,7 +48,9 @@ async def test_check_http_success(monkeypatch: pytest.MonkeyPatch) -> None:
 
 @pytest.mark.asyncio
 async def test_check_http_non_2xx(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr("monitoring.checks.types.ClientSession", lambda timeout: _FakeHttpSession(503))
+    monkeypatch.setattr(
+        "monitoring.checks.types.ClientSession", lambda timeout: _FakeHttpSession(503)
+    )
     ok, reason = await check_http(Target(name="svc", type="http", url="https://example.invalid"))
     assert ok is False
     assert reason == "HTTP 503"
@@ -80,8 +84,12 @@ async def test_check_smtp_missing_host_port() -> None:
 
 @pytest.mark.asyncio
 async def test_check_smtp_success(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr("monitoring.checks.types.aiosmtplib.SMTP", lambda **kwargs: _FakeSmtpClient())
-    ok, reason = await check_smtp(Target(name="svc", type="smtp", host="smtp.example.invalid", port=587))
+    monkeypatch.setattr(
+        "monitoring.checks.types.aiosmtplib.SMTP", lambda **kwargs: _FakeSmtpClient()
+    )
+    ok, reason = await check_smtp(
+        Target(name="svc", type="smtp", host="smtp.example.invalid", port=587)
+    )
     assert ok is True
     assert reason == "SMTP connect ok"
 
@@ -92,7 +100,9 @@ async def test_check_smtp_exception(monkeypatch: pytest.MonkeyPatch) -> None:
         raise RuntimeError("smtp down")
 
     monkeypatch.setattr("monitoring.checks.types.aiosmtplib.SMTP", _boom)
-    ok, reason = await check_smtp(Target(name="svc", type="smtp", host="smtp.example.invalid", port=587))
+    ok, reason = await check_smtp(
+        Target(name="svc", type="smtp", host="smtp.example.invalid", port=587)
+    )
     assert ok is False
     assert "SMTP error" in reason
 
@@ -122,7 +132,9 @@ async def test_check_dns_missing_host_query() -> None:
 @pytest.mark.asyncio
 async def test_check_dns_success(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("monitoring.checks.types.dns.asyncresolver.Resolver", _FakeResolver)
-    ok, reason = await check_dns(Target(name="svc", type="dns", host="127.0.0.1", query="example.invalid"))
+    ok, reason = await check_dns(
+        Target(name="svc", type="dns", host="127.0.0.1", query="example.invalid")
+    )
     assert ok is True
     assert reason == "DNS resolve ok"
 
@@ -130,7 +142,9 @@ async def test_check_dns_success(monkeypatch: pytest.MonkeyPatch) -> None:
 @pytest.mark.asyncio
 async def test_check_dns_empty_response(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("monitoring.checks.types.dns.asyncresolver.Resolver", _FakeResolverEmpty)
-    ok, reason = await check_dns(Target(name="svc", type="dns", host="127.0.0.1", query="example.invalid"))
+    ok, reason = await check_dns(
+        Target(name="svc", type="dns", host="127.0.0.1", query="example.invalid")
+    )
     assert ok is False
     assert reason == "DNS empty response"
 
@@ -142,6 +156,8 @@ async def test_check_dns_exception(monkeypatch: pytest.MonkeyPatch) -> None:
             raise RuntimeError("dns failed")
 
     monkeypatch.setattr("monitoring.checks.types.dns.asyncresolver.Resolver", _BoomResolver)
-    ok, reason = await check_dns(Target(name="svc", type="dns", host="127.0.0.1", query="example.invalid"))
+    ok, reason = await check_dns(
+        Target(name="svc", type="dns", host="127.0.0.1", query="example.invalid")
+    )
     assert ok is False
     assert "DNS error" in reason

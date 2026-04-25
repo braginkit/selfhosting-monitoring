@@ -26,7 +26,9 @@ class _FakeSmtpClient:
 
 async def test_smtp_notifier_sends_message(fake_settings, monkeypatch) -> None:
     fake_client = _FakeSmtpClient()
-    monkeypatch.setattr("monitoring.notifiers.smtp_notifier.aiosmtplib.SMTP", lambda **kwargs: fake_client)
+    monkeypatch.setattr(
+        "monitoring.notifiers.smtp_notifier.aiosmtplib.SMTP", lambda **kwargs: fake_client
+    )
 
     notifier = SmtpNotifier(fake_settings)
     event = AlertEvent(target="svc", severity="down", title="Service DOWN", body="details")

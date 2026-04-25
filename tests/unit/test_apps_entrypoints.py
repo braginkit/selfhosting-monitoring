@@ -47,7 +47,9 @@ async def test_worker_run_single_iteration(monkeypatch: pytest.MonkeyPatch) -> N
             return None
 
     async def _fake_run_check(target: Target) -> CheckResult:
-        return CheckResult(target=target.name, ok=False, reason="down", checked_at=datetime.now(UTC))
+        return CheckResult(
+            target=target.name, ok=False, reason="down", checked_at=datetime.now(UTC)
+        )
 
     async def _stop_sleep(seconds: int) -> None:
         raise asyncio.CancelledError

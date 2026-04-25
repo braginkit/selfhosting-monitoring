@@ -38,7 +38,9 @@ async def test_run_check_routes_dns(monkeypatch: pytest.MonkeyPatch) -> None:
         return True, "DNS resolve ok"
 
     monkeypatch.setattr("monitoring.checks.runner.check_dns", fake_check_dns)
-    result = await run_check(Target(name="svc", type="dns", host="1.1.1.1", query="example.invalid"))
+    result = await run_check(
+        Target(name="svc", type="dns", host="1.1.1.1", query="example.invalid")
+    )
 
     assert result.ok is True
     assert result.reason == "DNS resolve ok"
