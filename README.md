@@ -47,6 +47,14 @@ docker compose up -d
 docker compose logs -f monitor-worker matrix-bot
 ```
 
+Production note: `monitor-worker` pins `mail.bragin.crazedns.ru` to LAN IP
+`192.168.1.77` via `extra_hosts` to avoid WAN/hairpin resolution during SMTP
+delivery from inside the container.
+
+Production note: SMTP test messages should include proper headers (`Date`,
+`Message-ID`) when sent manually; otherwise mail filtering (`amavis`) may flag
+them as bad-header test traffic.
+
 ### GHCR auth via GitHub App (system setup)
 
 For private GHCR images, prefer GitHub App auth over long-lived PAT tokens.
@@ -79,6 +87,14 @@ docker compose up -d
 
 To pin a specific release, set `MONITOR_IMAGE` in `.env` to a version tag
 for example `ghcr.io/braginkit/selfhosting-monitoring:v0.1.0`.
+
+### Production notification routing (current state)
+
+- SMTP notifications use mail credentials from the local mail stack.
+- Matrix notifications use `@monitorbot` and are routed to a dedicated personal
+  alerts room (invited user: `@nebragin`).
+- `MONITOR_ALERT_CHANNEL_PRIORITY=smtp,matrix_outbox` keeps SMTP first and
+  Matrix outbox as fallback.
 
 ## Tests
 

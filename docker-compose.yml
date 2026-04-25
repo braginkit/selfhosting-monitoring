@@ -5,6 +5,8 @@ services:
     env_file:
       - .env.base
       - .env
+    extra_hosts:
+      - "mail.bragin.crazedns.ru:192.168.1.77"
     command: ["python", "-m", "monitoring.apps.worker"]
     depends_on:
       redis:
