@@ -47,6 +47,36 @@ docker compose up -d
 docker compose logs -f monitor-worker matrix-bot
 ```
 
+### GHCR auth via GitHub App (system setup)
+
+For private GHCR images, prefer GitHub App auth over long-lived PAT tokens.
+
+1. Create a GitHub App:
+   - Repository permissions: `Packages: Read-only`, `Contents: Read-only`
+   - Install it on `braginkit/selfhosting-monitoring`
+   - Generate a private key (`.pem`)
+2. On server, place key at a protected path, for example:
+   - `~/.config/selfhosting/gh-app-private-key.pem`
+   - `chmod 600 ~/.config/selfhosting/gh-app-private-key.pem`
+3. Run login script:
+
+```bash
+cd ~/monitoring
+chmod +x scripts/ghcr-login-github-app.sh
+GH_APP_ID="<app_id>" \
+GH_APP_INSTALLATION_ID="<installation_id>" \
+GH_APP_PRIVATE_KEY_PATH="$HOME/.config/selfhosting/gh-app-private-key.pem" \
+scripts/ghcr-login-github-app.sh
+```
+
+4. Validate pull path:
+
+```bash
+docker pull ghcr.io/braginkit/selfhosting-monitoring:latest
+docker compose pull
+docker compose up -d
+```
+
 To pin a specific release, set `MONITOR_IMAGE` in `.env` to a version tag
 for example `ghcr.io/braginkit/selfhosting-monitoring:v0.1.0`.
 
