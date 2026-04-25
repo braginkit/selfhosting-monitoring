@@ -1,0 +1,32 @@
+targets:
+  - name: hoppscotch
+    type: http
+    url: https://service1.example.invalid
+    timeout_seconds: 10
+
+  - name: matrix
+    type: http
+    url: https://service2.example.invalid/_matrix/client/versions
+    timeout_seconds: 10
+
+  - name: appflowy
+    type: http
+    url: https://service3.example.invalid/api/health
+    timeout_seconds: 10
+
+  - name: auth
+    type: http
+    url: https://service4.example.invalid
+    timeout_seconds: 10
+
+  - name: mail_smtp
+    type: smtp
+    host: smtp.example.invalid
+    port: 587
+    timeout_seconds: 10
+
+  - name: local_dns
+    type: dns
+    host: 127.0.0.1
+    query: service2.example.invalid
+    timeout_seconds: 5
