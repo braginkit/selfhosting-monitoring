@@ -15,12 +15,12 @@ Files:
 
 - `.env.base` - full variable contract (`KEY=`), public and safe.
 - `.env` - runtime secrets and local values (gitignored).
-- `.env.local.test` - committed test profile defaults (safe values only).
+- `.env.test.base` - committed test profile defaults (safe values only).
 
 Parsing is done via `pydantic-settings`:
 
 - runtime: `.env.base + .env`
-- tests: `.env.base + .env.local.test`
+- tests: `.env.base + .env.test.base`
 - process environment variables always override file values.
 - alert transport order is configurable via `MONITOR_ALERT_CHANNEL_PRIORITY`
   (example: `smtp,matrix_outbox`).
@@ -35,7 +35,7 @@ source .venv/bin/activate
 pip install poetry
 poetry config virtualenvs.create false
 poetry install
-cp .env.example .env
+# create .env from .env.base and fill secret values
 # update targets.yml with your private service endpoints
 ```
 

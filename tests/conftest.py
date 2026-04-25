@@ -16,4 +16,4 @@ async def fake_redis():
 @pytest.fixture
 def fake_settings() -> Settings:
     root = Path(__file__).resolve().parents[1]
-    return Settings(_env_file=(root / ".env.base", root / ".env.local.test"))
+    return Settings(_env_file=(root / ".env.base", root / ".env.test.base"))
