@@ -15,7 +15,7 @@ Files:
 
 - `.env.base` - full variable contract (`KEY=`), public and safe.
 - `.env` - runtime secrets and local values (gitignored).
-- `.env.local.test` - test profile (gitignored).
+- `.env.local.test` - committed test profile defaults (safe values only).
 
 Parsing is done via `pydantic-settings`:
 
@@ -36,7 +36,6 @@ pip install poetry
 poetry config virtualenvs.create false
 poetry install
 cp .env.example .env
-cp .env.local.test.example .env.local.test
 # update targets.yml with your private service endpoints
 ```
 
