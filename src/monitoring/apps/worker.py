@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from pathlib import Path
 
 from redis.asyncio import Redis
 
 from monitoring.checks import run_check
 from monitoring.config import get_settings
+from monitoring.delivery.store import SmtpDeliveryStore
+from monitoring.delivery.tracker import SmtpDeliveryTracker
 from monitoring.dispatch import AlertDispatcher
+from monitoring.models import AlertEvent
 from monitoring.notifiers.smtp_notifier import SmtpNotifier
 from monitoring.outbox.redis_outbox import RedisOutbox
 from monitoring.policy import AlertPolicy
@@ -28,10 +32,25 @@ async def run_worker() -> None:
         reminder_interval_seconds=settings.reminder_interval_seconds,
     )
     smtp = SmtpNotifier(settings)
+    delivery_store = SmtpDeliveryStore(redis=redis, key_prefix=settings.redis_key_prefix)
+    delivery_tracker = SmtpDeliveryTracker(
+        store=delivery_store,
+        outbox=outbox,
+        log_dir=Path(settings.mail_log_dir),
+        grace_seconds=settings.smtp_delivery_grace_seconds,
+        timeout_seconds=settings.smtp_delivery_timeout_seconds,
+        enabled=settings.smtp_delivery_tracking_enabled,
+    )
+
+    async def smtp_dispatch(event: AlertEvent) -> None:
+        message_id = await smtp.send(event)
+        if settings.smtp_delivery_tracking_enabled:
+            await delivery_store.register(message_id, event)
+
     dispatcher = AlertDispatcher(
         channel_priority=settings.alert_channels,
         strategies={
-            "smtp": smtp.send,
+            "smtp": smtp_dispatch,
             "matrix_outbox": outbox.enqueue,
         },
     )
@@ -54,6 +73,7 @@ async def run_worker() -> None:
                     )
                 except Exception as exc:
                     logging.exception("All alert channels failed for %s: %s", event.target, exc)
+        await delivery_tracker.reconcile_and_escalate()
         await asyncio.sleep(settings.poll_interval_seconds)
 
 

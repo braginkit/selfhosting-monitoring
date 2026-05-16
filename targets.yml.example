@@ -1,0 +1,35 @@
+# Production health-check targets for GEEKOM (copy to ~/monitoring/targets.yml on server).
+# monitor-worker must resolve *.bragin.crazedns.ru to LAN IP — see extra_hosts in docker-compose.yml.
+
+targets:
+  - name: hoppscotch
+    type: http
+    url: https://hoppscotch.bragin.crazedns.ru
+    timeout_seconds: 10
+
+  - name: matrix
+    type: http
+    url: https://matrix.bragin.crazedns.ru/_matrix/client/versions
+    timeout_seconds: 10
+
+  - name: appflowy
+    type: http
+    url: https://appflowy.bragin.crazedns.ru/api/health
+    timeout_seconds: 10
+
+  - name: auth
+    type: http
+    url: https://auth.bragin.crazedns.ru
+    timeout_seconds: 10
+
+  - name: mail_smtp
+    type: smtp
+    host: mail.bragin.crazedns.ru
+    port: 587
+    timeout_seconds: 10
+
+  - name: local_dns
+    type: dns
+    host: 192.168.1.75
+    query: matrix.bragin.crazedns.ru
+    timeout_seconds: 5

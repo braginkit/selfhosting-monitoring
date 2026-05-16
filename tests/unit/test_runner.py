@@ -51,3 +51,14 @@ async def test_run_check_dns_validation_path() -> None:
     result = await run_check(Target(name="svc", type="dns"))
     assert result.target == "svc"
     assert result.ok is False
+
+
+@pytest.mark.asyncio
+async def test_run_check_unsupported_type() -> None:
+    target = Target(name="legacy", type="http")
+    object.__setattr__(target, "type", "unknown")
+
+    result = await run_check(target)
+
+    assert result.ok is False
+    assert "Unsupported target type: unknown" in result.reason

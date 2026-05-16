@@ -74,3 +74,42 @@ async def test_reminder_after_interval(fake_redis):
         CheckResult("appflowy", False, "still down", datetime.now(UTC))
     )
     assert len(reminder) == 1
+
+
+@pytest.mark.asyncio
+async def test_no_alert_before_threshold(fake_redis) -> None:
+    store = RedisStateStore(fake_redis, "test")
+    policy = AlertPolicy(store=store, failure_threshold_attempts=5, reminder_interval_seconds=60)
+
+    events = await policy.evaluate(CheckResult("matrix", False, "timeout", datetime.now(UTC)))
+
+    assert events == []
+    state = await store.get("matrix")
+    assert state.fail_count == 1
+    assert state.status == "down"
+
+
+@pytest.mark.asyncio
+async def test_ok_when_already_up_emits_no_recovery(fake_redis) -> None:
+    store = RedisStateStore(fake_redis, "test")
+    policy = AlertPolicy(store=store, failure_threshold_attempts=1, reminder_interval_seconds=60)
+
+    events = await policy.evaluate(CheckResult("hoppscotch", True, "HTTP 200", datetime.now(UTC)))
+
+    assert events == []
+
+
+@pytest.mark.asyncio
+async def test_down_alert_body_contains_failure_metadata(fake_redis) -> None:
+    store = RedisStateStore(fake_redis, "test")
+    policy = AlertPolicy(store=store, failure_threshold_attempts=1, reminder_interval_seconds=60)
+    checked_at = datetime.now(UTC)
+
+    events = await policy.evaluate(
+        CheckResult("local_dns", False, "DNS error: timeout", checked_at)
+    )
+
+    assert len(events) == 1
+    assert "[ALERT] local_dns is DOWN" in events[0].title
+    assert "DNS error: timeout" in events[0].body
+    assert checked_at.isoformat() in events[0].body
