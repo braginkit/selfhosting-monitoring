@@ -62,9 +62,9 @@ Production note: alert emails must include `Date` and `Message-ID` headers
 (`SmtpNotifier` sets them). Without them, `amavis` flags `BAD-HEADER`, bounces
 may leave via direct MX and fail with Spamhaus PBL on WAN IP.
 
-Production note: `MONITOR_SMTP_FROM` must be the iCloud relay account
-(`bragin.kit@icloud.com`) so Postfix uses `smtp.mail.me.com` sender-dependent
-relay (see `infra/mail/README.md`).
+Production note: `MONITOR_SMTP_FROM` must match the iCloud relay account configured
+on the mail stack so Postfix uses `smtp.mail.me.com` sender-dependent relay
+(see `infra/mail/README.md` in the SelfHosting repo).
 
 Until a new GHCR image is published, `docker-compose.yml` bind-mounts
 `patches/smtp_notifier.py` over the image module (adds `Date` / `Message-ID`).

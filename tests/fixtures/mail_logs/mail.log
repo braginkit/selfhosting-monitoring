@@ -1,7 +1,8 @@
+# Synthetic Postfix/amavis log snippets for unit tests (not production logs).
 2026-05-16T15:58:25.248971+03:00 mail postfix/sender-cleanup/cleanup[2583075]: 3C7D71684E09: message-id=<test-delivered@bragin.crazedns.ru>
-2026-05-16T15:58:25.304190+03:00 mail postfix/qmgr[13000]: 3C7D71684E09: from=<bragin.kit@icloud.com>, size=384, nrcpt=1 (queue active)
+2026-05-16T15:58:25.304190+03:00 mail postfix/qmgr[13000]: 3C7D71684E09: from=<monitor@example.local>, size=384, nrcpt=1 (queue active)
 2026-05-16T15:58:25.412514+03:00 mail amavis[2539941]: (2539941-01) Passed CLEAN {RelayedOpenRelay}, Queue-ID: 3C7D71684E09, Message-ID: <test-delivered@bragin.crazedns.ru>, queued_as: 62C401684E0A
-2026-05-16T15:58:25.409426+03:00 mail postfix/qmgr[13000]: 62C401684E0A: from=<bragin.kit@icloud.com>, size=569, nrcpt=1 (queue active)
-2026-05-16T15:58:41.811087+03:00 mail postfix/smtp[2583081]: 62C401684E0A: to=<bragin.kit@icloud.com>, relay=smtp.mail.me.com[17.57.154.37]:587, delay=16, delays=0.01/0.01/16/0.44, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 7561818000F2)
+2026-05-16T15:58:25.409426+03:00 mail postfix/qmgr[13000]: 62C401684E0A: from=<monitor@example.local>, size=569, nrcpt=1 (queue active)
+2026-05-16T15:58:41.811087+03:00 mail postfix/smtp[2583081]: 62C401684E0A: to=<owner@example.local>, relay=smtp.mail.me.com[203.0.113.50]:587, delay=16, delays=0.01/0.01/16/0.44, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 7561818000F2)
 2026-05-16T07:57:56.429398+03:00 mail amavis[2280261]: (2280261-19) Blocked BAD-HEADER-0, Queue-ID: 4A5E71684E0A, Message-ID: <test-bounced@bragin.crazedns.ru>
-2026-05-16T07:58:01.124953+03:00 mail postfix/smtp[2539792]: 2CC881687F1D: to=<bragin.kit@icloud.com>, relay=mx01.mail.icloud.com[17.42.251.62]:25, delay=22, delays=0.01/0.01/21/0.97, dsn=5.7.1, status=bounced (host mx01.mail.icloud.com said: 550 5.7.1 Mail from IP 188.255.17.165 was rejected due to listing in Spamhaus PBL)
+2026-05-16T07:58:01.124953+03:00 mail postfix/smtp[2539792]: 2CC881687F1D: to=<owner@example.local>, relay=mx01.mail.icloud.com[203.0.113.51]:25, delay=22, delays=0.01/0.01/21/0.97, dsn=5.7.1, status=bounced (host mx01.mail.icloud.com said: 550 5.7.1 Mail from IP 203.0.113.99 was rejected due to listing in Spamhaus PBL)
