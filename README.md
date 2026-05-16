@@ -16,6 +16,8 @@ Files:
 - `.env.base` - full variable contract (`KEY=`), public and safe.
 - `.env` - runtime secrets and local values (gitignored).
 - `.env.test.base` - committed test profile defaults (safe values only).
+- `deploy/monitoring.env.prod.example` - production values template for the server
+  (copy to `~/monitoring/.env` and replace `CHANGE_ME`; no secrets in git).
 
 Parsing is done via `pydantic-settings`:
 
