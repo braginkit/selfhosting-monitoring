@@ -68,9 +68,14 @@ Production note: `MONITOR_SMTP_FROM` must match the iCloud relay account configu
 on the mail stack so Postfix uses `smtp.mail.me.com` sender-dependent relay
 (see `infra/mail/README.md` in the SelfHosting repo).
 
-Until a new GHCR image is published, `docker-compose.yml` bind-mounts
-`patches/smtp_notifier.py` over the image module (adds `Date` / `Message-ID`).
-After release, remove the patch mount and rely on the image build.
+### Smoke alerts (production)
+
+```bash
+docker compose exec monitor-worker python scripts/send-test-alert.py
+docker compose exec monitor-worker python scripts/send-test-alert.py --matrix-only
+```
+
+Server deploy helper (GHCR login + pull + up): `MONITOR_IMAGE_TAG=v0.2.1 scripts/deploy-geekom.sh`
 
 ### SMTP delivery tracking (Matrix escalation)
 
@@ -119,8 +124,8 @@ for example `ghcr.io/braginkit/selfhosting-monitoring:v0.1.0`.
 ### Production notification routing (current state)
 
 - SMTP notifications use mail credentials from the local mail stack.
-- Matrix notifications use `@monitorbot` and are routed to a dedicated personal
-  alerts room (invited user: `@nebragin`).
+- Matrix notifications use the bot account from `MONITOR_MATRIX_USER_ID` and
+  the room from `MONITOR_MATRIX_ROOM_ID`.
 - `MONITOR_ALERT_CHANNEL_PRIORITY=smtp,matrix_outbox` keeps SMTP first and
   Matrix outbox as fallback.
 

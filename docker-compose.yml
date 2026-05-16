@@ -14,8 +14,6 @@ services:
       - "mail.bragin.crazedns.ru:192.168.1.75"
     volumes:
       - ./targets.yml:/app/targets.yml:ro
-      # Until GHCR image includes Date/Message-ID headers (see smtp_notifier patch).
-      - ./patches/smtp_notifier.py:/app/src/monitoring/notifiers/smtp_notifier.py:ro
       # Postfix logs from docker-mailserver (external volume `mail_mail_logs` on GEEKOM).
       - mail_logs:/var/log/mail:ro
     command: ["python", "-m", "monitoring.apps.worker"]

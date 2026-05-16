@@ -8,6 +8,7 @@ WORKDIR /app
 
 COPY pyproject.toml README.md ./
 COPY src ./src
+COPY scripts ./scripts
 COPY targets.yml ./targets.yml
 
 RUN pip install poetry && \
