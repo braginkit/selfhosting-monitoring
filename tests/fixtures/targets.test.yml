@@ -1,11 +1,22 @@
 targets:
-  - name: appflowy
+  - name: hoppscotch
     type: http
-    url: https://appflowy.example.test/api/health
-    timeout_seconds: 1
+    url: https://hoppscotch.test.local
+    timeout_seconds: 10
+
+  - name: matrix
+    type: http
+    url: https://matrix.test.local/_matrix/client/versions
+    timeout_seconds: 10
 
   - name: mail_smtp
     type: smtp
-    host: smtp.example.test
+    host: mail.test.local
     port: 587
-    timeout_seconds: 1
+    timeout_seconds: 10
+
+  - name: local_dns
+    type: dns
+    host: 192.168.1.75
+    query: matrix.test.local
+    timeout_seconds: 5

@@ -47,6 +47,18 @@ async def test_check_http_success(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 @pytest.mark.asyncio
+async def test_check_http_accepts_3xx_redirect(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "monitoring.checks.types.ClientSession", lambda timeout: _FakeHttpSession(302)
+    )
+    ok, reason = await check_http(
+        Target(name="appflowy", type="http", url="https://appflowy.test.local/")
+    )
+    assert ok is True
+    assert reason == "HTTP 302"
+
+
+@pytest.mark.asyncio
 async def test_check_http_non_2xx(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         "monitoring.checks.types.ClientSession", lambda timeout: _FakeHttpSession(503)

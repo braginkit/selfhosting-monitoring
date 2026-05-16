@@ -18,6 +18,10 @@ class _Settings:
     alert_channels: list[str] = field(default_factory=lambda: ["smtp", "matrix_outbox"])
     targets_path: Path = Path("targets.yml")
     poll_interval_seconds: int = 1
+    smtp_delivery_tracking_enabled: bool = False
+    smtp_delivery_grace_seconds: int = 120
+    smtp_delivery_timeout_seconds: int = 600
+    mail_log_dir: str = "tests/fixtures/mail_logs"
 
 
 class _FakeRedisFactory:
@@ -39,8 +43,8 @@ async def test_worker_run_single_iteration(monkeypatch: pytest.MonkeyPatch) -> N
             return "smtp"
 
     class _FakeSmtpNotifier:
-        async def send(self, event: AlertEvent) -> None:
-            return None
+        async def send(self, event: AlertEvent) -> str:
+            return "<test@bragin.crazedns.ru>"
 
     class _FakeOutbox:
         async def enqueue(self, event: AlertEvent) -> None:
@@ -60,6 +64,13 @@ async def test_worker_run_single_iteration(monkeypatch: pytest.MonkeyPatch) -> N
     monkeypatch.setattr(worker, "RedisOutbox", lambda redis, key_prefix: _FakeOutbox())
     monkeypatch.setattr(worker, "AlertPolicy", lambda **kwargs: _FakePolicy())
     monkeypatch.setattr(worker, "SmtpNotifier", lambda _settings: _FakeSmtpNotifier())
+    monkeypatch.setattr(worker, "SmtpDeliveryStore", lambda redis, key_prefix: object())
+
+    class _FakeTracker:
+        async def reconcile_and_escalate(self) -> None:
+            return None
+
+    monkeypatch.setattr(worker, "SmtpDeliveryTracker", lambda **kwargs: _FakeTracker())
     monkeypatch.setattr(worker, "AlertDispatcher", lambda **kwargs: _FakeDispatcher())
     monkeypatch.setattr(
         worker,

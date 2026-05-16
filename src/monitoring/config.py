@@ -45,6 +45,11 @@ class Settings(BaseSettings):
     alert_channel_priority: str = "smtp,matrix_outbox"
     targets_file: str = "targets.yml"
 
+    smtp_delivery_tracking_enabled: bool = True
+    smtp_delivery_grace_seconds: int = 120
+    smtp_delivery_timeout_seconds: int = 600
+    mail_log_dir: str = "/var/log/mail"
+
     @property
     def targets_path(self) -> Path:
         return Path(self.targets_file).resolve()
