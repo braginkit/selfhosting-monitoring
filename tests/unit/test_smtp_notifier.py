@@ -63,7 +63,8 @@ async def test_smtp_notifier_propagates_connect_error(fake_settings, monkeypatch
             raise ConnectionError("mail unreachable")
 
     monkeypatch.setattr(
-        "monitoring.notifiers.smtp_notifier.aiosmtplib.SMTP", lambda **kwargs: _FailingClient(**kwargs)
+        "monitoring.notifiers.smtp_notifier.aiosmtplib.SMTP",
+        lambda **kwargs: _FailingClient(**kwargs),
     )
 
     notifier = SmtpNotifier(fake_settings)
@@ -79,7 +80,8 @@ async def test_smtp_notifier_propagates_login_error(fake_settings, monkeypatch) 
             raise RuntimeError("535 auth failed")
 
     monkeypatch.setattr(
-        "monitoring.notifiers.smtp_notifier.aiosmtplib.SMTP", lambda **kwargs: _AuthFailClient(**kwargs)
+        "monitoring.notifiers.smtp_notifier.aiosmtplib.SMTP",
+        lambda **kwargs: _AuthFailClient(**kwargs),
     )
 
     notifier = SmtpNotifier(fake_settings)

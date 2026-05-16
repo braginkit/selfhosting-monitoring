@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Send one test alert through configured channels (SMTP, then Matrix outbox fallback)."""
+
 from __future__ import annotations
 
 import argparse

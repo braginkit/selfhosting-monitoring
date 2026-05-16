@@ -1,5 +1,3 @@
-from datetime import UTC, datetime, timedelta
-
 import pytest
 
 from monitoring.delivery.mail_log import DeliveryStatus

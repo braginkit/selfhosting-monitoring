@@ -8,18 +8,25 @@ from typing import cast
 from redis.asyncio import Redis
 
 from monitoring.delivery.mail_log import DeliveryStatus
-from monitoring.models import AlertEvent
+from monitoring.models import AlertEvent, AlertSeverity
 
 
 def _message_key(message_id: str) -> str:
     return message_id.strip().strip("<>").lower()
 
 
+def _parse_severity(value: str) -> AlertSeverity:
+    if value not in ("down", "recovery"):
+        msg = f"invalid alert severity in store: {value!r}"
+        raise ValueError(msg)
+    return cast(AlertSeverity, value)
+
+
 @dataclass(slots=True)
 class SmtpDeliveryRecord:
     message_id: str
     target: str
-    severity: str
+    severity: AlertSeverity
     title: str
     body: str
     sent_at: datetime
@@ -68,13 +75,15 @@ class SmtpDeliveryStore:
         return records
 
     async def get(self, message_id: str) -> SmtpDeliveryRecord | None:
-        data = await cast(Awaitable[dict[str, str]], self._redis.hgetall(self._hash_key(message_id)))
+        data = await cast(
+            Awaitable[dict[str, str]], self._redis.hgetall(self._hash_key(message_id))
+        )
         if not data:
             return None
         return SmtpDeliveryRecord(
             message_id=data["message_id"],
             target=data["target"],
-            severity=data["severity"],
+            severity=_parse_severity(data["severity"]),
             title=data["title"],
             body=data["body"],
             sent_at=datetime.fromisoformat(data["sent_at"]),

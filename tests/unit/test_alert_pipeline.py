@@ -32,9 +32,7 @@ async def test_failure_threshold_then_smtp_success(fake_redis, fake_settings) ->
     )
 
     for _ in range(2):
-        events = await policy.evaluate(
-            CheckResult("matrix", False, "err", datetime.now(UTC))
-        )
+        events = await policy.evaluate(CheckResult("matrix", False, "err", datetime.now(UTC)))
         for event in events:
             await dispatcher.dispatch(event)
 

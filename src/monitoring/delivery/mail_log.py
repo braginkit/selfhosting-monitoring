@@ -102,7 +102,11 @@ def inspect_mail_logs(log_text: str, message_id: str) -> tuple[DeliveryStatus, s
         return DeliveryStatus.PENDING, None
 
     if not related:
-        related = [line for line in log_text.splitlines() if _normalize_message_id(message_id) in line.lower()]
+        related = [
+            line
+            for line in log_text.splitlines()
+            if _normalize_message_id(message_id) in line.lower()
+        ]
 
     joined = "\n".join(related)
 

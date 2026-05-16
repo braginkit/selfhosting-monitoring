@@ -81,9 +81,7 @@ async def test_no_alert_before_threshold(fake_redis) -> None:
     store = RedisStateStore(fake_redis, "test")
     policy = AlertPolicy(store=store, failure_threshold_attempts=5, reminder_interval_seconds=60)
 
-    events = await policy.evaluate(
-        CheckResult("matrix", False, "timeout", datetime.now(UTC))
-    )
+    events = await policy.evaluate(CheckResult("matrix", False, "timeout", datetime.now(UTC)))
 
     assert events == []
     state = await store.get("matrix")
@@ -96,9 +94,7 @@ async def test_ok_when_already_up_emits_no_recovery(fake_redis) -> None:
     store = RedisStateStore(fake_redis, "test")
     policy = AlertPolicy(store=store, failure_threshold_attempts=1, reminder_interval_seconds=60)
 
-    events = await policy.evaluate(
-        CheckResult("hoppscotch", True, "HTTP 200", datetime.now(UTC))
-    )
+    events = await policy.evaluate(CheckResult("hoppscotch", True, "HTTP 200", datetime.now(UTC)))
 
     assert events == []
 

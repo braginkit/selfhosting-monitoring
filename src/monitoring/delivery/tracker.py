@@ -17,7 +17,9 @@ from monitoring.outbox.redis_outbox import RedisOutbox
 logger = logging.getLogger(__name__)
 
 
-def build_escalation_event(record: SmtpDeliveryRecord, *, status: DeliveryStatus, error: str | None) -> AlertEvent:
+def build_escalation_event(
+    record: SmtpDeliveryRecord, *, status: DeliveryStatus, error: str | None
+) -> AlertEvent:
     icloud_hint = ""
     if error and ICLOUD_ISSUE_RE.search(error):
         icloud_hint = (

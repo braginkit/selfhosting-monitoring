@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Literal
 
 TargetType = Literal["http", "smtp", "dns"]
+AlertSeverity = Literal["down", "recovery"]
 
 
 @dataclass(slots=True)
@@ -39,6 +40,6 @@ class IncidentState:
 @dataclass(slots=True)
 class AlertEvent:
     target: str
-    severity: Literal["down", "recovery"]
+    severity: AlertSeverity
     title: str
     body: str
